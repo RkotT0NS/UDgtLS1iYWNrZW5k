@@ -42,3 +42,7 @@ java-generated/
 
 # IA tools
 .antigravitycli/
+
+# test results
+test-results/*
+!test-results/.git-keep
