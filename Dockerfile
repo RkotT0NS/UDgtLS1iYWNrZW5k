@@ -46,9 +46,9 @@ COPY --from=builder /app/application/ ./
 ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
 # === Test Stage ===
 # For headless testing
-# Runs 'mvn test' against the compiled code
-FROM build AS test
-CMD ["./gradlew", "test"]
+# Runs tests against the compiled code
+FROM builder AS test
+CMD ["./gradlew", "clean", "test"]
 
 # === Prod Stage ===
 # Creates the final, lightweight production image
