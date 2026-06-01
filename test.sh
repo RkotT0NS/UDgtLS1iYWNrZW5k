@@ -52,17 +52,9 @@ TEST_PROJECT() {
 
     # Run tests; do not exit immediately on failure so we can extract reports
     set +e
-    docker run --rm --name "${CONTAINER_NAME}" "${IMAGE_NAME}"
+    docker run --rm  --volume "$(pwd)/test-results:/app/test-results" --name "${CONTAINER_NAME}" "${IMAGE_NAME}"
     TEST_EXIT_CODE=$?
     set -e
-
-    # Extract test results from container
-    echo -e "${BLUE}===> Extracting test results from container...${NC}"
-    mkdir -p test-results
-    docker cp "${CONTAINER_NAME}:/app/test-results/." ./test-results/ 2>/dev/null || true
-
-    # Clean up container
-    docker rm -f "${CONTAINER_NAME}" >/dev/null
 
     # Exit with the test suite's exit code if they failed
     if [ $TEST_EXIT_CODE -ne 0 ]; then
