@@ -3,12 +3,12 @@
 FROM eclipse-temurin:21-jdk-jammy AS deps
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml
-COPY .gradle/ .gradle
+# Setup gradle dependencies
 COPY gradle/wrapper/gradle-wrapper.jar ./gradle/wrapper/
 COPY gradle/wrapper/gradle-wrapper.properties ./gradle/wrapper/
 COPY build.gradle gradlew system.properties settings.gradle ./
 
+# RUN ./gradlew clean compileJava
 # Download dependencies first to leverage Docker cache
 RUN ./gradlew dependencies --no-daemon
 
