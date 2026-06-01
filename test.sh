@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 CHECK_PROJECT() {
     MAVEN_PROJECT=false;
     GRADLE_PROJECT=false
