@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# Exit immediately if a command exits with a non-zero status
-# set -e
-
 CHECK_PROJECT() {
     MAVEN_PROJECT=false;
     GRADLE_PROJECT=false
@@ -50,11 +47,10 @@ TEST_PROJECT() {
 
     echo -e "${BLUE}===> Running project tests inside Docker container...${NC}"
     CONTAINER_NAME="test-runner-${IMAGE_NAME}"
-    docker rm -f "${CONTAINER_NAME}" 2>/dev/null || true
 
     # Run tests; do not exit immediately on failure so we can extract reports
     set +e
-    docker run --name "${CONTAINER_NAME}" "${IMAGE_NAME}"
+    docker run --rm --name "${CONTAINER_NAME}" "${IMAGE_NAME}"
     TEST_EXIT_CODE=$?
     set -e
 
