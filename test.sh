@@ -3,7 +3,6 @@
 set -e
 
 CHECK_PROJECT() {
-    MAVEN_PROJECT=false;
     GRADLE_PROJECT=false
     NPM_PROJECT=false
 
@@ -17,16 +16,7 @@ CHECK_PROJECT() {
         echo "NPM";
     fi
 
-    if [ -f "pom.xml" ]; then
-        MAVEN_PROJECT=true
-        echo "MAVEN";
-    fi
-
-    echo $GRADLE_PROJECT
-    echo $NPM_PROJECT
-    echo $MAVEN_PROJECT
-
-    if [[ ! ( $GRADLE_PROJECT == "true"  || $NPM_PROJECT == "true"  ||  $MAVEN_PROJECT == "true" ) ]]; then
+    if [[ ! ( $GRADLE_PROJECT == "true"  || $NPM_PROJECT == "true") ]]; then
         echo "Neither Gradle, NPM, nor Maven project found";
         exit 1;
     fi
@@ -43,7 +33,7 @@ TEST_PROJECT() {
     GREEN='\033[0;32m'
     BLUE='\033[0;34m'
     NC='\033[0m' # No Color
-    START_TIME=$(date +%s%6N)
+
     echo -e "${BLUE}===> Building Docker test image (target: test)...${NC}"
     docker build --target test -t "${IMAGE_NAME}" .
 
