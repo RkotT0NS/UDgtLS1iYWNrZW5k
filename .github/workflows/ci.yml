@@ -77,14 +77,13 @@ jobs:
           SHA_TAG="${{ github.sha }}"
           IMAGE_BASE="ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
 
-          echo "branch_image=${IMAGE_BASE}:${BRANCH_NAME}" >> $GITHUB_OUTPUT
-          echo "sha_image=${IMAGE_BASE}:${SHA_TAG}" >> $GITHUB_OUTPUT
+          echo "image_version=${IMAGE_BASE}:${BRANCH_NAME}-${SHA_TAG}" >> $GITHUB_OUTPUT
 
       - name: Make build.sh executable
         run: chmod +x build.sh
 
       - name: Run build.sh
-        run: ./build.sh "${{ steps.tags.outputs.branch_image }}-${{ steps.tags.outputs.sha_image }}"
+        run: ./build.sh "${{ steps.tags.outputs.image_version }}"
 
       - name: Push to GHCR
         run: |
