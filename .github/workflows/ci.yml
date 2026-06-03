@@ -41,3 +41,51 @@ jobs:
         with:
           name: junit-test-results
           path: ./test-results/
+
+  build:
+    name: Build & Publish Image
+    needs: test
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate Token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ steps.generate-token.outputs.token }} # Jeton temporaire de l'App
+
+      - name: Set up Image Tags
+        id: tags
+        run: |
+          # Sanitize branch name (replace non-alphanumeric/dot/dash with - and lowercase)
+          BRANCH_NAME=$(echo "${{ github.ref_name }}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9._-]/-/g')
+          SHA_TAG="${{ github.sha }}"
+          IMAGE_BASE="ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
+
+          echo "branch_image=${IMAGE_BASE}:${BRANCH_NAME}" >> $GITHUB_OUTPUT
+          echo "sha_image=${IMAGE_BASE}:${SHA_TAG}" >> $GITHUB_OUTPUT
+
+      - name: Make build.sh executable
+        run: chmod +x build.sh
+
+      - name: Run build.sh
+        run: ./build.sh "${{ steps.tags.outputs.branch_image }}-${{ steps.tags.outputs.sha_image }}"
+
+      - name: Push to GHCR
+        run: |
+          docker push "${{ steps.tags.outputs.branch_image }}-${{ steps.tags.outputs.sha_image }}"
