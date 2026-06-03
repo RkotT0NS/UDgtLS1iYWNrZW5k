@@ -27,10 +27,21 @@ jobs:
       - name: Make test.sh executable
         run: chmod +x test.sh
 
+      - name: Set up Image Tags
+        id: tags
+        run: |
+          # Sanitize branch name (replace non-alphanumeric/dot/dash with - and lowercase)
+          BRANCH_NAME=$(echo "${{ github.ref_name }}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9._-]/-/g')
+          SHA_TAG="${{ github.sha }}"
+          IMAGE_BASE="ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
+
+          echo "image_name=${IMAGE_BASE}" >> $GITHUB_OUTPUT
+          echo "image_version=${BRANCH_NAME}-${SHA_TAG}" >> $GITHUB_OUTPUT
+
       - name: Run test.sh
         env:
           DOCKER_BUILD_PARAMS: --cache-from=type=gha --cache-to=type=gha,mode=max --load
-        run: ./test.sh
+        run: ./test.sh "${{ steps.tags.outputs.image_name }}" "${{ steps.tags.outputs.image_version }}"
 
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
@@ -78,7 +89,8 @@ jobs:
           SHA_TAG="${{ github.sha }}"
           IMAGE_BASE="ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
 
-          echo "image_version=${IMAGE_BASE}:${BRANCH_NAME}-${SHA_TAG}" >> $GITHUB_OUTPUT
+          echo "image_name=${IMAGE_BASE}" >> $GITHUB_OUTPUT
+          echo "image_version=${BRANCH_NAME}-${SHA_TAG}" >> $GITHUB_OUTPUT
 
       - name: Make build.sh executable
         run: chmod +x build.sh
@@ -86,8 +98,8 @@ jobs:
       - name: Run build.sh
         env:
           DOCKER_BUILD_PARAMS: --cache-from=type=gha --cache-to=type=gha,mode=max --load
-        run: ./build.sh "${{ steps.tags.outputs.image_version }}"
+        run: ./build.sh "${{ steps.tags.outputs.image_name }}" "${{ steps.tags.outputs.image_version }}"
 
       - name: Push to GHCR
         run: |
-          docker push "${{ steps.tags.outputs.image_version }}"
+          docker push "${{ steps.tags.outputs.image_name }}:${{ steps.tags.outputs.image_version }}"
