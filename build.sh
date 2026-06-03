@@ -62,6 +62,7 @@ fi
 # e.g., ./build.sh tag1 tag2 ...
 # If no arguments are passed, it will use default names
 if [[ "$PROJECT_TYPE" =~ (^|$'\n')GRADLE($|$'\n') ]]; then
+    echo "Gradle project detected"
     if [ $# -gt 0 ]; then
         BUILD_PROJECT "$@"
     else
