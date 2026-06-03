@@ -35,7 +35,7 @@ TEST_PROJECT() {
     NC='\033[0m' # No Color
 
     echo -e "${BLUE}===> Building Docker test image (target: test)...${NC}"
-    docker build --target test -t "${IMAGE_NAME}" .
+    docker build ${DOCKER_BUILD_PARAMS:-} --target test -t "${IMAGE_NAME}" .
 
     echo -e "${BLUE}===> Running project tests inside Docker container...${NC}"
     CONTAINER_NAME="test-runner-${IMAGE_NAME}"

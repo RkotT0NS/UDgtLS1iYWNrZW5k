@@ -21,10 +21,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Make test.sh executable
         run: chmod +x test.sh
 
       - name: Run test.sh
+        env:
+          DOCKER_BUILD_PARAMS: --cache-from=type=gha --cache-to=type=gha,mode=max --load
         run: ./test.sh
 
       - name: Publish Test Report
@@ -55,12 +60,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # - name: Generate Token
-      #   id: generate-token
-      #   uses: actions/create-github-app-token@v1
-      #   with:
-      #     app-id: ${{ secrets.APP_ID }}
-      #     private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -83,6 +84,8 @@ jobs:
         run: chmod +x build.sh
 
       - name: Run build.sh
+        env:
+          DOCKER_BUILD_PARAMS: --cache-from=type=gha --cache-to=type=gha,mode=max --load
         run: ./build.sh "${{ steps.tags.outputs.image_version }}"
 
       - name: Push to GHCR

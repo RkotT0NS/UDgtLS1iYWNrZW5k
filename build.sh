@@ -41,7 +41,7 @@ BUILD_PROJECT() {
     echo -e "${BLUE}===> Building Docker production image (target: prod) for ${IMAGE_NAME}...${NC}"
 
     # Construct the build command with all tags
-    BUILD_CMD=("docker" "build" "--target" "prod" "-t" "${IMAGE_NAME}" ".")
+    BUILD_CMD=("docker" "build" ${DOCKER_BUILD_PARAMS:-} "--target" "prod" "-t" "${IMAGE_NAME}" ".")
     for TAG in "${ADDITIONAL_TAGS[@]}"; do
         BUILD_CMD+=("-t" "${TAG}")
     done
