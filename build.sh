@@ -39,7 +39,7 @@ BUILD_PROJECT() {
     NC='\033[0m' # No Color
 
     echo -e "${BLUE}===> Building Docker production image (target: prod) for ${IMAGE_NAME}...${NC}"
-    
+
     # Construct the build command with all tags
     BUILD_CMD=("docker" "build" "--target" "prod" "-t" "${IMAGE_NAME}" ".")
     for TAG in "${ADDITIONAL_TAGS[@]}"; do
@@ -68,6 +68,7 @@ if [[ "$PROJECT_TYPE" =~ (^|$'\n')GRADLE($|$'\n') ]]; then
         BUILD_PROJECT "p8-backend"
     fi
 fi
+
 if [[ "$PROJECT_TYPE" =~ (^|$'\n')NPM($|$'\n') ]]; then
     if [ $# -gt 0 ]; then
         BUILD_PROJECT "$@"
