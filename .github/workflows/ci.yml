@@ -87,4 +87,4 @@ jobs:
 
       - name: Push to GHCR
         run: |
-          docker push "${{ steps.tags.outputs.branch_image }}-${{ steps.tags.outputs.sha_image }}"
+          docker push "${{ steps.tags.outputs.image_version }}"
