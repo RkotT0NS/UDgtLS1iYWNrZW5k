@@ -43,9 +43,9 @@ if [ $PROJECT_FOUND -ne 0 ]; then
 fi
 
 if [[ "$PROJECT_TYPE" =~ (^|$'\n')GRADLE($|$'\n') ]]; then
-    TEST_PROJECT "wd34-backend" "${PROJECT_NAME}" "${IMAGE_NAME}" "${IMAGE_VERSION}"
+    BUILD_PROJECT "wd34-backend" "${PROJECT_NAME}" "${IMAGE_NAME}" "${IMAGE_VERSION}"
 fi
 
 if [[ "$PROJECT_TYPE" =~ (^|$'\n')NPM($|$'\n') ]]; then
-    TEST_PROJECT "wd34-frontend" "${PROJECT_NAME}" "${IMAGE_VERSION}"
+    BUILD_PROJECT "wd34-frontend" "${PROJECT_NAME}" "${IMAGE_VERSION}"
 fi
