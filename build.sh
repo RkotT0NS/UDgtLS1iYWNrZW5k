@@ -28,7 +28,7 @@ BUILD_PROJECT() {
         ${DOCKER_BUILD_PARAMS:-} \
         --target prod \
         -t \
-        ${IMAGE_NAME}:${IMAGE_VERSION} .
+        "${IMAGE_NAME}:${IMAGE_VERSION}" .
 
     # Run the docker build command
     # "${BUILD_CMD}"
@@ -43,9 +43,9 @@ if [ $PROJECT_FOUND -ne 0 ]; then
 fi
 
 if [[ "$PROJECT_TYPE" =~ (^|$'\n')GRADLE($|$'\n') ]]; then
-    BUILD_PROJECT "wd34-backend" "${PROJECT_NAME}" "${IMAGE_NAME}" "${IMAGE_VERSION}"
+    BUILD_PROJECT "wd34-backend" "${IMAGE_NAME}" "${IMAGE_VERSION}"
 fi
 
 if [[ "$PROJECT_TYPE" =~ (^|$'\n')NPM($|$'\n') ]]; then
-    BUILD_PROJECT "wd34-frontend" "${PROJECT_NAME}" "${IMAGE_VERSION}"
+    BUILD_PROJECT "wd34-frontend" "${IMAGE_NAME}" "${IMAGE_VERSION}"
 fi
