@@ -33,15 +33,13 @@ jobs:
           # Sanitize branch name (replace non-alphanumeric/dot/dash with - and lowercase)
           BRANCH_NAME=$(echo "${{ github.ref_name }}" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9._-]/-/g')
           SHA_TAG="${{ github.sha }}"
-          IMAGE_BASE="ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
 
-          echo "image_name=${IMAGE_BASE}" >> $GITHUB_OUTPUT
           echo "image_version=${BRANCH_NAME}-${SHA_TAG}" >> $GITHUB_OUTPUT
 
       - name: Run test.sh
         env:
           DOCKER_BUILD_PARAMS: --cache-from=type=gha --cache-to=type=gha,mode=max --load
-        run: ./test.sh "${{ steps.tags.outputs.image_name }}" "${{ steps.tags.outputs.image_version }}"
+        run: ./test.sh "${{ steps.tags.outputs.image_version }}"
 
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v4
