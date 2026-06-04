@@ -1,0 +1,20 @@
+
+CHECK_PROJECT() {
+    GRADLE_PROJECT=false
+    NPM_PROJECT=false
+
+    if [ -f "settings.gradle" ]; then
+        GRADLE_PROJECT=true
+        echo "GRADLE";
+    fi
+
+    if [ -f "package.json" ]; then
+        NPM_PROJECT=true
+        echo "NPM";
+    fi
+
+    if [[ ! ( $GRADLE_PROJECT == "true"  || $NPM_PROJECT == "true") ]]; then
+        echo "Neither Gradle, NPM, nor Maven project found";
+        exit 1;
+    fi
+}
